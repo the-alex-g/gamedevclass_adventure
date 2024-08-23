@@ -1,16 +1,12 @@
-adventure_map = {}
-
 
 def main():
-    load_map("dungeon")
-    play_adventure()
+    play(load_adventure("dungeon"))
 
 
-def load_map(name):
-    global adventure_map
-    adventure_map.clear()
+def load_adventure(name):
+    adventure = {}
 
-    with open(name + ".map", "r") as map_file:
+    with open(name + ".adv", "r") as map_file:
         node_name = ""
         node_body = ""
         goto = ""
@@ -18,7 +14,7 @@ def load_map(name):
         for line in map_file.read().splitlines():
             if line.startswith("> node "):
                 if node_name != "":
-                    adventure_map[node_name] = [node_body, links, goto]
+                    adventure[node_name] = [node_body, links, goto]
                     node_body = ""
                     links = []
                     goto = ""
@@ -32,14 +28,15 @@ def load_map(name):
                 goto = line[7:]
             elif line != "":
                 node_body += line + "\n"
-        adventure_map[node_name] = [node_body, links, goto]
+        adventure[node_name] = [node_body, links, goto]
+    return adventure
 
 
-def play_adventure():
+def play(adventure):
     current_node = "START"    
     game_running = True
     while game_running:
-        (text, links, goto) = adventure_map[current_node]
+        (text, links, goto) = adventure[current_node]
         print(f"\n{text}")
         if goto != "":
             current_node = goto

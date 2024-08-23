@@ -1,0 +1,13 @@
+> node START
+There is a door to the left and the right.
+> linkto left > Left
+> linkto right > Right
+
+> node left
+A rockslide collapses the tunnel in front of you.
+> goto START
+
+> node right
+You win!
+> linkto START > Play again
+> linkto 
