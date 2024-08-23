@@ -1,6 +1,9 @@
 
 def main():
-    play(load_adventure("dungeon"))
+    menu_options = {
+        "Load an adventure":lambda: play(load_adventure(input("Enter the file name: ")))
+    }
+    menu_options[get_input_from_menu(["Load an adventure"])]()
 
 
 def load_adventure(name):
@@ -10,20 +13,19 @@ def load_adventure(name):
         node_name = ""
         node_body = ""
         goto = ""
-        links = []
+        links = {}
         for line in map_file.read().splitlines():
             if line.startswith("> node "):
                 if node_name != "":
                     adventure[node_name] = [node_body, links, goto]
                     node_body = ""
-                    links = []
+                    links = {}
                     goto = ""
                 node_name = line[7:]
             elif line.startswith("> linkto "):
-                links.append([
-                    line[9:line.find(" > ")], # link target
-                    line[line.find(" > ") + 3:] # link name
-                ])
+                link_name = line[line.find(" > ") + 3:]
+                link_target = line[9:line.find(" > ")]
+                links[link_name] = link_target
             elif line.startswith("> goto "):
                 goto = line[7:]
             elif line != "":
@@ -38,16 +40,21 @@ def play(adventure):
     while game_running:
         (text, links, goto) = adventure[current_node]
         print(f"\n{text}")
-        if goto != "":
-            current_node = goto
+        if goto == "":
+            current_node = links[get_input_from_menu(sorted(links))]
         else:
-            for i in range(0, len(links)):
-                print(f"    {i}) {links[i][1]}")
-            choice = input("Choose an option: ")
-            if choice.isdigit() and int(choice) < len(links):
-                current_node = links[int(choice)][0]
+            current_node = goto
         if current_node == "END":
             game_running = False
+
+
+def get_input_from_menu(menu_options):
+    for i in range(0, len(menu_options)):
+        print(f"    {i}) {menu_options[i]}")
+    choice = input("Choose an option: ")
+    if choice.isdigit() and int(choice) < len(menu_options):
+        return menu_options[int(choice)]
+    return get_input_from_menu(menu_options)
 
 
 main()
