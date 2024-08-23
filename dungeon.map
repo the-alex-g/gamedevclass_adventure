@@ -1,0 +1,8 @@
+> node START
+You are in a room. There is a door to where you just came from.
+> linkto myroom > Go through the door
+
+> node myroom
+You are in a room. There is a door to where you just came from, and a door to the abyss.
+> linkto START > Go to where you just were
+> linkto END > Go to the abyss
