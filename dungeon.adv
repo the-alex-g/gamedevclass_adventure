@@ -1,8 +1,21 @@
 [node START
 [text This is the game.]
+[on_exit
+    [text You see a secret door!]
+    [link secret-zone Go through the secret door]
+    [on_exit
+        [rm_text You see a secret door!]
+        [rm_link Go through the secret door]
+    ]
+]
 [link START Play again]
 [link the-end Quit]]
 
 [node the-end
 [text The end.]
 [goto END]]
+
+[node secret-zone
+[text This area is very secret.]
+[link START Go back the way you came]
+[on_exit [goto START]]]
