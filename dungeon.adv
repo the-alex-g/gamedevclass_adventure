@@ -1,5 +1,7 @@
 [node START
-[text This is the game.]
+[text You are in a dungeon.]
+[link left Go left]
+[link right Go right]
 [on_exit
     [text You see a secret door!]
     [link secret-zone Go through the secret door]
@@ -7,15 +9,55 @@
         [rm_text You see a secret door!]
         [rm_link Go through the secret door]
     ]
-]
-[link START Play again]
-[link the-end Quit]]
+]]
 
-[node the-end
-[text The end.]
-[goto END]]
+[node right
+[text You see a goblin!]
+[link START Go back]
+[link fight Fight the goblin]]
+
+[node fight
+[text You defeat the goblin with your trusty -10 broken longsword of ill-luck.]
+[link treasure Claim the treasure the goblin was guarding]
+[link stairs Go up the nearby stairs]]
+
+[node stairs
+[text You climb the stairs and emerge back in the world above!]
+[goto win]]
+
+[node win
+[text You win the game!]
+[link START Play again]
+[link END Quit]]
+
+[node left
+[text A corridor stretches out before you.]
+[link START Go back]
+[link corridor Continue down the corridor]]
+
+[node corridor
+[text Suddenly, the ceiling falls on you and you die.]
+[goto lose]]
+
+[node lose
+[text You lose.]
+[link START Play again]
+[link END Quit]]
+
+[node treasure
+[text You claim the legendary x5 sword of sudden death!]
+[link stairs Climb the stairs]]
 
 [node secret-zone
-[text This area is very secret.]
-[link START Go back the way you came]
-[on_exit [goto START]]]
+[text This secret chamber is full of mysterious treasure! The sign says you may take ONE item...]
+[link shield Grab the shiny shield]
+[link hat Seize the pointy hat]
+[link START Go back]]
+
+[node shield
+[text The shield is so shiny! You could use it as a mirror.]
+[link START Go back]]
+
+[node hat
+[text The hat is clearly magical. When you put it on, you can see light!]
+[link START Go back]]
