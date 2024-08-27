@@ -7,7 +7,7 @@ This function displays a menu that allows the user to play or edit an adventure.
 This function reads the file "name.adv" into a string and feeds it into `eval_commands`, which populates a dictionary with the nodes of the game. The function returns this dictionary.
 
 ### load_default_adventure()
-Loads a predetermined string into an adventure dictionary with `eval_commands`.
+Loads a predetermined string into a file named "default_adventure.adv".
 
 ### eval_commands(string, root)
 This function interprets the adventure code and calls the appropriate python functions using `run_command`. These functions modify the `root` object.
@@ -43,8 +43,8 @@ Removes the link with the matching text from the node's link list. This function
 ### _advfunc_rm_text(node, *text)
 Removes the line of text from the node's description list. This function can be called by `eval_commands`.
 
-### play(adventure)
-Accepts a dictionary of the form `{node_name : node}`, which it uses to run the game.
+### play(file)
+Accepts a file name, which it uses to load an adventure dictionary and run the game.
 
 ### edit(file)
 Accepts a file name, which is used to load the corresponding adventure (if it exists), and then edit the node using a series of menus. The modified adventure is saved to the file it was loaded from when the function is exited.

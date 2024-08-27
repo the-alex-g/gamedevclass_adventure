@@ -27,7 +27,7 @@
 
 [node win
 [text You win the game!]
-[link START Play again]
+[link RESTART Play again]
 [link END Quit]]
 
 [node left
@@ -41,7 +41,7 @@
 
 [node lose
 [text You lose.]
-[link START Play again]
+[link RESTART Play again]
 [link END Quit]]
 
 [node treasure

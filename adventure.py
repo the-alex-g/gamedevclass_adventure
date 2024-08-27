@@ -68,9 +68,10 @@ def main():
     while keep_going:
         choice = get_input_from_menu(["Run adventure", "Run default adventure", "Edit adventure", "Quit"])
         if choice == "Run adventure":
-            play(load_adventure(input("Enter the file name: ")))
+            play(input("Enter the file name: "))
         elif choice == "Run default adventure":
-            play(load_default_adventure())
+            load_default_adventure()
+            play("default_adventure")
         elif choice == "Edit adventure":
             edit(input("Enter the file name: "))
         elif choice == "Quit":
@@ -95,18 +96,17 @@ def load_adventure(name):
 
 
 def load_default_adventure():
-    adventure = {}
-    eval_commands(
-        """[node START [text This is the game.] [link START Play again] [link END Quit]
-        [on_exit [text You see a secret door!] [link secret-zone Go through the secret door]
-                 [on_exit [rm_text You see a secret door!]
-                          [rm_link Go through the secret door]]]]
-        [node secret-zone
-        [text This is the most secret zone you have ever seen.]
-        [link START Go back]]""",
-        adventure
-    )
-    return adventure
+    with open("default_adventure.adv", "w+") as file:
+        file.write(
+            """[node START [text This is the game.] [link START Play again] [link END Quit]
+            [on_exit [text You see a secret door!] [link secret-zone Go through the secret door]
+                    [on_exit [rm_text You see a secret door!]
+                            [rm_link Go through the secret door]]]]
+            [node secret-zone
+            [text This is the most secret zone you have ever seen.]
+            [link START Go back]]"""
+        )
+        file.close()
 
 
 def eval_commands(string, root):
@@ -179,7 +179,8 @@ def _advfunc_rm_text(node, *text):
     node.remove_description(separate(text, " "))
 
 
-def play(adventure):
+def play(file):
+    adventure = load_adventure(file)
     current_node = "START"    
     game_running = True
     while game_running:
@@ -194,6 +195,11 @@ def play(adventure):
         node.exit()
         if current_node == "END":
             game_running = False
+        elif current_node == "RESTART":
+            # without setting game_running to false, you end up with nested loops
+            # that cause the game to crash because "RESTART" isn't in 'adventure'
+            game_running = False
+            play(file)
 
 
 def edit(file):
