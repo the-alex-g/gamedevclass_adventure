@@ -66,20 +66,14 @@ class Node:
 def main():
     keep_going = True
     while keep_going:
-        menu_options = {
-            "Load an adventure":"load",
-            "Load default adventure":"load default",
-            "Edit an adventure":"edit",
-            "Quit":"quit"
-        }
-        choice = menu_options[get_input_from_menu(sorted(menu_options))]
-        if choice == "load":
+        choice = get_input_from_menu(["Run adventure", "Run default adventure", "Edit adventure", "Quit"])
+        if choice == "Run adventure":
             play(load_adventure(input("Enter the file name: ")))
-        elif choice == "load default":
-            play(load_adventure("dungeon"))
-        elif choice == "edit":
+        elif choice == "Run default adventure":
+            play(load_default_adventure())
+        elif choice == "Edit adventure":
             edit(input("Enter the file name: "))
-        elif choice == "quit":
+        elif choice == "Quit":
             keep_going = False
         
 
@@ -94,6 +88,21 @@ def load_adventure(name):
     except FileNotFoundError:
         return {}
 
+    return adventure
+
+
+def load_default_adventure():
+    adventure = {}
+    eval_commands(
+        """[node START [text This is the game.] [link START Play again] [link END Quit]
+        [on_exit [text You see a secret door!] [link secret-zone Go through the secret door]
+                 [on_exit [rm_text You see a secret door!]
+                          [rm_link Go through the secret door]]]]
+        [node secret-zone
+        [text This is the most secret zone you have ever seen.]
+        [link START Go back]]""",
+        adventure
+    )
     return adventure
 
 
@@ -176,7 +185,7 @@ def play(adventure):
             node = adventure[node.replace_with]
         print(f"\n{node.get_description()}")
         if node.goto in ["", "NONE"]:
-            current_node = node.links[get_input_from_menu(sorted(node.links))]
+            current_node = node.links[get_input_from_menu(node.links.keys())]
         else:
             current_node = node.goto
         node.exit()
@@ -186,33 +195,27 @@ def play(adventure):
 
 def edit(file):
     adventure = load_adventure(file)
-    options = {
-            "Edit an existing node":"edit",
-            "Create a new node":"create",
-            "Save and quit":"quit",
-            "Delete a node":"delete"
-        }
     keep_going = True
     while keep_going:
         print("Current Nodes:")
         for node_name in adventure:
             print(node_name)
-        action = options[get_input_from_menu(sorted(options))]
-        if action == "edit":
-            node_name = get_input_from_menu(sorted(adventure))
+        action = get_input_from_menu(["Edit a node", "Create a node", "Delete a node", "Save and quit"])
+        if action == "Edit a node":
+            node_name = get_input_from_menu(adventure.keys())
             node = adventure[node_name]
             new_node_name = edit_node(node, node_name)
             del adventure[node_name]
             adventure[new_node_name] = node
-        elif action == "create":
+        elif action == "Create a node":
             node = Node()
             node_name = edit_node(node, "new-node")
             adventure[node_name] = node
-        elif action == "delete":
+        elif action == "Delete a node":
             node_name = input("Node to delete: ")
             if node_name != "":
                 del adventure[node_name]
-        elif action == "quit":
+        elif action == "Save and quit":
             keep_going = False
     
     with open(file + ".adv", "w+") as adv_file:
@@ -229,7 +232,7 @@ def edit_node(node, node_name):
     while linking:
         link_type = get_input_from_menu(["Edit link", "Delete a link", "Add link", "Set transition", "Finish"])
         if link_type == "Edit link":
-            edit_link(node, get_input_from_menu(sorted(node.links)))
+            edit_link(node, get_input_from_menu(node.links.keys()))
         elif link_type == "Add link":
             node.add_link("", "")
             edit_link(node, "")
@@ -238,7 +241,7 @@ def edit_node(node, node_name):
         elif link_type == "Finish":
             linking = False
         elif link_type == "Delete a link":
-            node.remove_link(get_input_from_menu(sorted(node.links)))
+            node.remove_link(get_input_from_menu(node.links.keys()))
     return node_name
 
 
@@ -258,6 +261,7 @@ def edit_field(current, field_name):
 
 
 def get_input_from_menu(menu_options):
+    menu_options = list(menu_options)
     if len(menu_options) > 0:
         for i in range(0, len(menu_options)):
             print(f"    {i}) {menu_options[i]}")
