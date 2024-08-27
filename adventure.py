@@ -81,8 +81,11 @@ def main():
 def load_adventure(name):
     adventure = {}
 
+    if name.find(".") == -1:
+        name += ".adv"
+
     try:
-        map_file = open(f"{name}.adv", "r")
+        map_file = open(name, "r")
         eval_commands(map_file.read(), adventure)
         map_file.close()
     except FileNotFoundError:
@@ -218,7 +221,9 @@ def edit(file):
         elif action == "Save and quit":
             keep_going = False
     
-    with open(file + ".adv", "w+") as adv_file:
+    if file.find(".") == -1:
+        file += ".adv"
+    with open(file, "w+") as adv_file:
         for node_name in adventure:
            adv_file.write(adventure[node_name].get_string(node_name) + "\n\n")
         adv_file.close()

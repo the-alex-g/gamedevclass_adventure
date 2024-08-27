@@ -114,4 +114,4 @@ Functions are written in the format `[function_name and all the arguments]`, wit
 The adventure starts at the node named START. If a link goes to END, the adventure ends. See the dungeon.adv file or the string in the `load_default_adventure` function for an example of an adventure program.
 
 # Running the Game
-Download the adventure.py file and run it. I use `python3 adventure.py` in my command line, but your milage may vary. You could also open it in IDLE and run it that way. Or any other way you can run python 3.12  files.
+Download the adventure.py file and run it. I use `python3 adventure.py` in my command line, but your milage may vary. You could also open it in IDLE and run it that way. Or any other way you can run python v3.12 files.
