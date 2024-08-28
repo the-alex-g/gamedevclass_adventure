@@ -184,22 +184,26 @@ def play(file):
     current_node = "START"    
     game_running = True
     while game_running:
-        node = adventure[current_node]
-        while node.replace_with != "":
-            node = adventure[node.replace_with]
-        print(f"\n{node.get_description()}")
-        if node.goto in ["", "NONE"]:
-            current_node = node.links[get_input_from_menu(node.links.keys())]
+        if current_node in adventure:
+            node = adventure[current_node]
+            while node.replace_with != "":
+                node = adventure[node.replace_with]
+            print(f"\n{node.get_description()}")
+            if node.goto in ["", "NONE"]:
+                current_node = node.links[get_input_from_menu(node.links.keys())]
+            else:
+                current_node = node.goto
+            node.exit()
+            if current_node == "END":
+                game_running = False
+            elif current_node == "RESTART":
+                # without setting game_running to false, you end up with nested loops
+                # that cause the game to crash because "RESTART" isn't in 'adventure'
+                game_running = False
+                play(file)
         else:
-            current_node = node.goto
-        node.exit()
-        if current_node == "END":
+            print(f"Node '{current_node}' does not exist! Returning to main menu...")
             game_running = False
-        elif current_node == "RESTART":
-            # without setting game_running to false, you end up with nested loops
-            # that cause the game to crash because "RESTART" isn't in 'adventure'
-            game_running = False
-            play(file)
 
 
 def edit(file):
